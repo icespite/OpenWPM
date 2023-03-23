@@ -22,14 +22,14 @@ if args.tranco:
     sites = ["http://" + x for x in latest_list.top(10)]
 else:
     sites = [
-        "http://www.example.com",
-        "http://www.princeton.edu",
-        "http://citp.princeton.edu/",
+        "https://www.baidu.com",
+        # "http://www.princeton.edu",
+        # "http://citp.princeton.edu/",
     ]
 
 # Loads the default ManagerParams
 # and NUM_BROWSERS copies of the default BrowserParams
-NUM_BROWSERS = 2
+NUM_BROWSERS = 1
 manager_params = ManagerParams(num_browsers=NUM_BROWSERS)
 browser_params = [BrowserParams(display_mode="native") for _ in range(NUM_BROWSERS)]
 
@@ -47,6 +47,7 @@ for browser_param in browser_params:
     browser_param.callstack_instrument = True
     # Record DNS resolution
     browser_param.dns_instrument = True
+    browser_param.save_content = "beacon,csp_report,image,imageset,main_frame,media,object,object_subrequest,ping,script,stylesheet,sub_frame,web_manifest,websocket,xml_dtd,xmlhttprequest,xslt,other"
 
 # Update TaskManager configuration (use this for crawl-wide settings)
 manager_params.data_directory = Path("./datadir/")

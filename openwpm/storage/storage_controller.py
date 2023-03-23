@@ -127,18 +127,33 @@ class StorageController:
                 )
 
             if record_type == RECORD_TYPE_CONTENT:
+                # assert len(data) == 2
+                # if self.unstructured_storage is None:
+                #     self.logger.error(
+                #         """Tried to save content while not having
+                #         provided any unstructured storage provider."""
+                #     )
+                #     continue
+                # content, content_hash = data
+                # content = base64.b64decode(content)
+                # await self.unstructured_storage.store_blob(
+                #     filename=content_hash, blob=content
+                # )
+                # continue
                 assert len(data) == 2
-                if self.unstructured_storage is None:
-                    self.logger.error(
-                        """Tried to save content while not having
-                        provided any unstructured storage provider."""
-                    )
-                    continue
+                # if self.unstructured_storage is None:
+                #     self.logger.error(
+                #         """Tried to save content while not having
+                #         provided any unstructured storage provider."""
+                #     )
+                #     continue
+                # self.logger.error("data", data)
                 content, content_hash = data
-                content = base64.b64decode(content)
-                await self.unstructured_storage.store_blob(
-                    filename=content_hash, blob=content
-                )
+                save_data = {}
+                save_data["visit_id"] = INVALID_VISIT_ID
+                save_data["content"] = content
+                save_data["content_hash"] = content_hash
+                await self.store_record("responses_content", INVALID_VISIT_ID, save_data)
                 continue
 
             if "visit_id" not in data:
