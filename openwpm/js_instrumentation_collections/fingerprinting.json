@@ -9,30 +9,101 @@
     "HTMLCanvasElement",
     "Storage",
     "window.navigator",
-    {"CanvasRenderingContext2D": {
-        "excludedProperties": [
-            "quadraticCurveTo",
-            "lineTo",
-            "transform",
-            "globalAlpha",
-            "moveTo",
-            "drawImage",
-            "setTransform",
-            "clearRect",
-            "closePath",
-            "beginPath",
-            "canvas",
-            "translate"
-        ]
-    }},
-    {"window": {
-        "propertiesToInstrument": ["name", "localStorage", "sessionStorage"]
-    }},
-    {"window.document": {
-        "propertiesToInstrument": ["cookie", "referrer"],
-        "logCallStack": true
-    }},
-    {"window.screen": {
-        "propertiesToInstrument": ["pixelDepth", "colorDepth"]
-    }}
+    {
+        "CanvasRenderingContext2D": {
+            "excludedProperties": [
+                "quadraticCurveTo",
+                "lineTo",
+                "transform",
+                "globalAlpha",
+                "moveTo",
+                "drawImage",
+                "setTransform",
+                "clearRect",
+                "canvas",
+                "translate"
+            ],
+            "propertiesToInstrument": ["getImageData", "getLineDash", "measureText", "isPointInPath", "fillText", "fillRect", "beginPath", "arc", "closePath", "fill"]
+        }
+    },
+    {
+        "window": {
+            "propertiesToInstrument": ["name", "webdriver", "emit", "outerHeight", "outerWidth", "innerWidth", "innerHeight", "devicePixelRatio", "localStorage", "indexedDB", "sessionStorage", "Intl", "openDatabase", "swfobject", "ondeviceproximity", "onuserproximity", "DeviceOrientationEvent", "DeviceMotionEvent"]
+        }
+    },
+    {
+        "window.document": {
+            "propertiesToInstrument": ["cookie", "referrer", "createElement", "createElementNS", "getElementsByClassName", "getElementsByName", "getElementsByTagName", "insertBefore", "appendChild", "elementFromPoint"]
+        }
+    },
+    {
+        "window.history": {
+            "propertiesToInstrument": ["pushState"]
+        }
+    },
+    {
+        "window.screen": {
+            "propertiesToInstrument": ["width", "height", "availWidth", "availHeight", "availTop", "availLeft", "colorDepth", "pixelDepth", "deviceXDPI", "logicalXDPI", "fontSmoothingEnabled", "screenInfo"]
+        }
+    },
+    {
+        "window.AudioContext": {
+            "propertiesToInstrument": ["createAnalyser", "createOscillator", "createGain", "createScriptProcessor", "createDynamicsCompressor"]
+        }
+    },
+    {
+        "window.OfflineAudioContext": {
+            "propertiesToInstrument": ["createAnalyser", "createOscillator", "createGain", "createScriptProcessor", "createDynamicsCompressor"]
+        }
+    },
+    {
+        "window.AnalyserNode": {
+            "propertiesToInstrument": ["getFloatFrequencyData", "getByteFrequencyData", "getFloatTimeDomainData", "getByteTimeDomainData"]
+        }
+    },
+    {
+        "window.WebGLRenderingContext": {
+            "propertiesToInstrument": ["getParameter", "getSupportedExtensions", "getContextAttributes", "getShaderPrecisionFormat", "getExtension", "readPixels", "getUniformLocation", "getAttribLocation", "clearColor", "enable", "depthFunc", "clear", "createBuffer", "bindBuffer", "bufferData", "createProgram", "createShader", "shaderSource", "compileShader", "attachShader", "linkProgram", "useProgram", "drawArrays"]
+        }
+    },
+    {
+        "window.WebGL2RenderingContext": {
+            "propertiesToInstrument": ["getParameter", "getSupportedExtensions", "getContextAttributes", "getShaderPrecisionFormat", "getExtension", "readPixels", "getUniformLocation", "getAttribLocation", "clearColor", "enable", "depthFunc", "clear", "createBuffer", "bindBuffer", "bufferData", "createProgram", "createShader", "shaderSource", "compileShader", "attachShader", "linkProgram", "useProgram", "drawArrays"]
+        }
+    },
+    {
+        "window.Intl.DateTimeFormat": {
+            "propertiesToInstrument": ["resolvedOptions().timeZone"]
+        }
+    },
+    {
+        "Date": {
+            "propertiesToInstrument": ["getTimezoneOffset"]
+        }
+    },
+    {
+        "SVGTextContentElement": {
+            "propertiesToInstrument": ["getComputedTextLength"]
+        }
+    },
+    {
+        "speechSynthesis": {
+            "propertiesToInstrument": ["getVoices"]
+        }
+    },
+    {
+        "localStorage": {
+            "propertiesToInstrument": ["setItem", "getItem", "removeItem"]
+        }
+    },
+    {
+        "sessionStorage": {
+            "propertiesToInstrument": ["setItem", "getItem", "removeItem"]
+        }
+    },
+    {
+        "HTMLVideoElement": {
+            "propertiesToInstrument": ["canPlayType"]
+        }
+    }
 ]

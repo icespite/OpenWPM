@@ -9,6 +9,7 @@ from openwpm.commands.browser_commands import GetCommand
 from openwpm.config import BrowserParams, ManagerParams
 from openwpm.storage.sql_provider import SQLiteStorageProvider
 from openwpm.task_manager import TaskManager
+from openwpm.storage.leveldb import LevelDbProvider
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--tranco", action="store_true", default=False),
@@ -22,14 +23,14 @@ if args.tranco:
     sites = ["http://" + x for x in latest_list.top(10)]
 else:
     sites = [
-        "http://www.example.com",
-        "http://www.princeton.edu",
-        "http://citp.princeton.edu/",
+        "https://usen.com/",
+        # "http://www.princeton.edu",
+        # "http://citp.princeton.edu/",
     ]
 
 # Loads the default ManagerParams
 # and NUM_BROWSERS copies of the default BrowserParams
-NUM_BROWSERS = 2
+NUM_BROWSERS = 1
 manager_params = ManagerParams(num_browsers=NUM_BROWSERS)
 browser_params = [BrowserParams(display_mode="native") for _ in range(NUM_BROWSERS)]
 
@@ -47,6 +48,10 @@ for browser_param in browser_params:
     browser_param.callstack_instrument = True
     # Record DNS resolution
     browser_param.dns_instrument = True
+    # browser_param.save_content = True
+    browser_param.save_content = "beacon,csp_report,image,imageset,main_frame,media,object,object_subrequest,ping,script,stylesheet,sub_frame,web_manifest,websocket,xml_dtd,xmlhttprequest,xslt,other"  # 保存 img css js 和 html
+    browser_param.proxy_ip = "172.31.16.1"
+    browser_param.proxy_port = 7890
 
 # Update TaskManager configuration (use this for crawl-wide settings)
 manager_params.data_directory = Path("./datadir/")
@@ -63,7 +68,7 @@ with TaskManager(
     manager_params,
     browser_params,
     SQLiteStorageProvider(Path("./datadir/crawl-data.sqlite")),
-    None,
+    LevelDbProvider(Path("./datadir/content.ldb")),
 ) as manager:
     # Visits the sites
     for index, site in enumerate(sites):
@@ -81,9 +86,9 @@ with TaskManager(
         )
 
         # Start by visiting the page
-        command_sequence.append_command(GetCommand(url=site, sleep=3), timeout=60)
+        command_sequence.append_command(GetCommand(url=site, sleep=13), timeout=120)
         # Have a look at custom_command.py to see how to implement your own command
-        command_sequence.append_command(LinkCountingCommand())
+        # command_sequence.append_command(LinkCountingCommand())
 
         # Run commands across all browsers (simple parallelization)
         manager.execute_command_sequence(command_sequence)
