@@ -24,18 +24,16 @@ def query_db(
     return rows
 
 
-def get_content(db_name: Path) -> Iterator[Tuple[AnyStr, AnyStr]]:
+def get_content(db: Path) -> List[Union[Tuple[Any, ...], sqlite3.Row]]:
     """Yield key, value pairs from the deduplicated leveldb content database
 
     Parameters
     ----------
-    db_name : Path
+    db : Path
         The full path to the current db
     """
-    db = plyvel.DB(str(db_name), create_if_missing=False, compression="snappy")
-    for content_hash, content in db.iterator():
-        yield content_hash, content
-    db.close()
+    select_columns = "content_hash, content"
+    return query_db(db, f"SELECT {select_columns} FROM responses_content", as_tuple=as_tuple)
 
 
 def get_javascript_entries(

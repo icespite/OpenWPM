@@ -789,11 +789,13 @@ class TestPOSTInstrument(OpenWPMTest):
         css_file_path = os.path.abspath("test_pages/shared/test_style.css")
 
         manager_params, browser_params = self.get_config()
-        manager, db_path = task_manager_creator((manager_params, browser_params))
+        manager, db_path = task_manager_creator(
+            (manager_params, browser_params))
         test_url = utilities.BASE_TEST_URL + "/post_file_upload.html"
         cs = command_sequence.CommandSequence(test_url)
         cs.get(sleep=0, timeout=60)
-        cs.append_command(FilenamesIntoFormCommand(img_file_path, css_file_path))
+        cs.append_command(FilenamesIntoFormCommand(
+            img_file_path, css_file_path))
         manager.execute_command_sequence(cs)
         manager.close()
 
@@ -902,6 +904,7 @@ def test_javascript_saving(http_params, xpi, server):
     structured_storage = SQLiteStorageProvider(
         db_path=manager_params.data_directory / "crawl-data.sqlite"
     )
+    sqlite_path = Path(manager_params.data_directory) / "crawl-data.sqlite"
     ldb_path = Path(manager_params.data_directory) / "content.ldb"
     unstructured_storage = LevelDbProvider(db_path=ldb_path)
     manager = task_manager.TaskManager(
@@ -913,8 +916,8 @@ def test_javascript_saving(http_params, xpi, server):
         "0110c0521088c74f179615cd7c404816816126fa657550032f75ede67a66c7cc",
         "b34744034cd61e139f85f6c4c92464927bed8343a7ac08acf9fb3c6796f80f08",
     }
-    for chash, content in db_utils.get_content(ldb_path):
-        chash = chash.decode("ascii").lower()
+    for content_hash, content in db_utils.get_content(sqlite_path):
+        chash = base64.decode(content_hash).decode("ascii").lower()
         pyhash = sha256(content).hexdigest().lower()
         assert pyhash == chash  # Verify expected key (sha256 of content)
         assert chash in expected_hashes
@@ -937,6 +940,7 @@ def test_document_saving(http_params, xpi, server):
     structured_storage = SQLiteStorageProvider(
         db_path=manager_params.data_directory / "crawl-data.sqlite"
     )
+    sqlite_path = Path(manager_params.data_directory) / "crawl-data.sqlite"
     ldb_path = Path(manager_params.data_directory) / "content.ldb"
     unstructured_storage = LevelDbProvider(db_path=ldb_path)
     manager = task_manager.TaskManager(
@@ -945,8 +949,8 @@ def test_document_saving(http_params, xpi, server):
 
     manager.get(url=test_url, sleep=1)
     manager.close()
-    for chash, content in db_utils.get_content(ldb_path):
-        chash = chash.decode("ascii").lower()
+    for content_hash, content in db_utils.get_content(sqlite_path):
+        chash = base64.decode(content_hash).decode("ascii").lower()
         pyhash = sha256(content).hexdigest().lower()
         assert pyhash == chash  # Verify expected key (sha256 of content)
         assert chash in expected_hashes
@@ -963,6 +967,7 @@ def test_content_saving(http_params, xpi, server):
         browser_param.save_content = True
     db = manager_params.data_directory / "crawl-data.sqlite"
     structured_storage = SQLiteStorageProvider(db_path=db)
+    sqlite_path = Path(manager_params.data_directory) / "crawl-data.sqlite"
     ldb_path = Path(manager_params.data_directory) / "content.ldb"
     unstructured_storage = LevelDbProvider(db_path=ldb_path)
     manager = task_manager.TaskManager(
@@ -984,8 +989,8 @@ def test_content_saving(http_params, xpi, server):
         disk_content[chash] = content
 
     ldb_content = dict()
-    for chash, content in db_utils.get_content(ldb_path):
-        chash = chash.decode("ascii")
+    for content_hash, content in db_utils.get_content(sqlite_path):
+        chash = base64.decode(content_hash).decode("ascii").lower()
         ldb_content[chash] = content
 
     for k, v in disk_content.items():
