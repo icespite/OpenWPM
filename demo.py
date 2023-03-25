@@ -22,8 +22,8 @@ if args.tranco:
     sites = ["http://" + x for x in latest_list.top(10)]
 else:
     sites = [
-        "https://www.baidu.com",
-        # "http://www.princeton.edu",
+        # "https://www.baidu.com",
+        "https://usen.com/",
         # "http://citp.princeton.edu/",
     ]
 
@@ -48,6 +48,9 @@ for browser_param in browser_params:
     # Record DNS resolution
     browser_param.dns_instrument = True
     browser_param.save_content = "beacon,csp_report,image,imageset,main_frame,media,object,object_subrequest,ping,script,stylesheet,sub_frame,web_manifest,websocket,xml_dtd,xmlhttprequest,xslt,other"
+    browser_param.profile_archive_dir = Path("./datadir/profiles/")
+    browser_param.proxy_ip = "172.31.16.1" 
+    browser_param.proxy_port = 7890
 
 # Update TaskManager configuration (use this for crawl-wide settings)
 manager_params.data_directory = Path("./datadir/")
@@ -82,7 +85,7 @@ with TaskManager(
         )
 
         # Start by visiting the page
-        command_sequence.append_command(GetCommand(url=site, sleep=3), timeout=60)
+        command_sequence.append_command(GetCommand(url=site, sleep=3), timeout=120)
         # Have a look at custom_command.py to see how to implement your own command
         command_sequence.append_command(LinkCountingCommand())
 
