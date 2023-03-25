@@ -151,11 +151,11 @@ class StorageController:
             # Hacking around the fact that task and crawl don't have a VisitID
             del data["visit_id"]
         # Turning these into task to be able to have them complete without blocking the socket
-        self.logger.warn(
-            "store_record visit_id %d  table_name %s   ",
-            visit_id,
-            table_name,
-        )
+        # self.logger.warn(
+        #     "store_record visit_id %d  table_name %s   ",
+        #     visit_id,
+        #     table_name,
+        # )
         self.store_record_tasks[visit_id].append(
             asyncio.create_task(
                 self.structured_storage.store_record(table=table_name,
@@ -164,10 +164,10 @@ class StorageController:
 
     async def store_http_response(self, table_name: TableName,
                                   data: Dict[str, Any]) -> None:
-        self.logger.warn(
-            "store_http_response visit_id %s",
-            data["content_hash"] ,
-        )
+        # self.logger.warn(
+        #     "store_http_response visit_id %s",
+        #     data["content_hash"] ,
+        # )
         self.store_record_tasks["store_record_tasks"].append(
             asyncio.create_task(
                 self.structured_storage.store_record(

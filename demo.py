@@ -85,7 +85,7 @@ with TaskManager(
         )
 
         # Start by visiting the page
-        command_sequence.append_command(GetCommand(url=site, sleep=3), timeout=120)
+        command_sequence.append_command(GetCommand(url=site, sleep=30), timeout=120)
         # Have a look at custom_command.py to see how to implement your own command
         command_sequence.append_command(LinkCountingCommand())
 
