@@ -103,6 +103,8 @@ class BrowserParams(DataClassJsonMixin):
     donottrack: bool = False
     tracking_protection: bool = False
     custom_params: Dict[Any, Any] = field(default_factory=lambda: {})
+    proxy_ip: Optional[str] = None
+    proxy_port: Optional[int] = None
 
 
 @dataclass

@@ -120,6 +120,17 @@ def deploy_firefox(
     # Set various prefs to improve speed and eliminate traffic to Mozilla
     configure_firefox.optimize_prefs(fo)
 
+    if browser_params.proxy_ip and browser_params.proxy_port:
+        fo.set_preference(
+            "network.proxy.type", 1
+        )
+        fo.set_preference(
+            "network.proxy.socks", browser_params.proxy_ip
+        )
+        fo.set_preference(
+            "network.proxy.socks_port", browser_params.proxy_port
+        )
+
     # Intercept logging at the Selenium level and redirect it to the
     # main logger.
     interceptor = FirefoxLogInterceptor(browser_params.browser_id)
