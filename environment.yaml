@@ -11,7 +11,7 @@ dependencies:
 - gcsfs=2022.11.0
 - geckodriver=0.32.0
 - ipython=8.8.0
-- isort=5.11.4
+- isort=5.12.0
 - leveldb=1.23
 - multiprocess=0.70.14
 - mypy=0.991

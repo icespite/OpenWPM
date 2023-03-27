@@ -24,13 +24,13 @@ if args.tranco:
 else:
     sites = [
         "https://usen.com/",
-        # "http://www.princeton.edu",
+        "http://www.google.com",
         # "http://citp.princeton.edu/",
     ]
 
 # Loads the default ManagerParams
 # and NUM_BROWSERS copies of the default BrowserParams
-NUM_BROWSERS = 1
+NUM_BROWSERS = 2
 manager_params = ManagerParams(num_browsers=NUM_BROWSERS)
 browser_params = [BrowserParams(display_mode="native") for _ in range(NUM_BROWSERS)]
 
@@ -86,7 +86,7 @@ with TaskManager(
         )
 
         # Start by visiting the page
-        command_sequence.append_command(GetCommand(url=site, sleep=13), timeout=120)
+        command_sequence.append_command(GetCommand(url=site, sleep=30), timeout=120)
         # Have a look at custom_command.py to see how to implement your own command
         # command_sequence.append_command(LinkCountingCommand())
 
