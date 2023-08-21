@@ -76,7 +76,8 @@ CREATE TABLE IF NOT EXISTS http_requests(
   resource_type TEXT NOT NULL,
   post_body TEXT,
   post_body_raw TEXT,
-  time_stamp DATETIME NOT NULL
+  time_stamp DATETIME NOT NULL,
+  isblocked INTEGER
 );
 
 /*
@@ -101,7 +102,8 @@ CREATE TABLE IF NOT EXISTS http_responses(
   request_id INTEGER NOT NULL,
   location TEXT NOT NULL,
   time_stamp DATETIME NOT NULL,
-  content_hash TEXT
+  content_hash TEXT,
+  isblocked INTEGER
 );
 
 /*
