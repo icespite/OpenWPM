@@ -58,6 +58,37 @@ CREATE TABLE
 /*
  # http_requests
  */
+CREATE TABLE IF NOT EXISTS http_requests(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  incognito INTEGER,
+  browser_id INTEGER NOT NULL,
+  visit_id INTEGER NOT NULL,
+  extension_session_uuid TEXT,
+  event_ordinal INTEGER,
+  window_id INTEGER,
+  tab_id INTEGER,
+  frame_id INTEGER,
+  url TEXT NOT NULL,
+  top_level_url TEXT,
+  parent_frame_id INTEGER,
+  frame_ancestors TEXT,
+  method TEXT NOT NULL,
+  referrer TEXT NOT NULL,
+  headers TEXT NOT NULL,
+  request_id INTEGER NOT NULL,
+  is_XHR INTEGER,
+  is_third_party_channel INTEGER,
+  is_third_party_to_top_window INTEGER,
+  triggering_origin TEXT,
+  loading_origin TEXT,
+  loading_href TEXT,
+  req_call_stack TEXT,
+  resource_type TEXT NOT NULL,
+  post_body TEXT,
+  post_body_raw TEXT,
+  time_stamp DATETIME NOT NULL,
+  isblocked INTEGER
+);
 
 CREATE TABLE
     IF NOT EXISTS http_requests(
@@ -94,6 +125,28 @@ CREATE TABLE
 /*
  # http_responses
  */
+CREATE TABLE IF NOT EXISTS http_responses(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  incognito INTEGER,
+  browser_id INTEGER NOT NULL,
+  visit_id INTEGER NOT NULL,
+  extension_session_uuid TEXT,
+  event_ordinal INTEGER,
+  window_id INTEGER,
+  tab_id INTEGER,
+  frame_id INTEGER,
+  url TEXT NOT NULL,
+  method TEXT NOT NULL,
+  response_status INTEGER,
+  response_status_text TEXT NOT NULL,
+  is_cached INTEGER NOT NULL,
+  headers TEXT NOT NULL,
+  request_id INTEGER NOT NULL,
+  location TEXT NOT NULL,
+  time_stamp DATETIME NOT NULL,
+  content_hash TEXT,
+  isblocked INTEGER
+);
 
 CREATE TABLE
     IF NOT EXISTS http_responses(
