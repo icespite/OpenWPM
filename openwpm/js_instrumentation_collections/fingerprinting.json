@@ -2,13 +2,18 @@
     "ScriptProcessorNode",
     "GainNode",
     "AnalyserNode",
+    "IIRFilterNode",
     "OscillatorNode",
     "OfflineAudioContext",
     "AudioContext",
+    "AudioBuffer",
     "RTCPeerConnection",
     "HTMLCanvasElement",
     "Storage",
     "window.navigator",
+    "window",
+    "Element",
+    "HTMLElement",
     {
         "CanvasRenderingContext2D": {
             "excludedProperties": [
