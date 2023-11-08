@@ -1,6 +1,7 @@
 import json
 import logging
 import os.path
+import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
@@ -9,6 +10,7 @@ from easyprocess import EasyProcessError
 from multiprocess import Queue
 from pyvirtualdisplay import Display
 from selenium import webdriver
+from selenium.webdriver.firefox.service import Service
 
 from ..commands.profile_commands import load_profile
 from ..config import BrowserParamsInternal, ConfigEncoder, ManagerParamsInternal
@@ -33,7 +35,9 @@ def deploy_firefox(
 
     root_dir = os.path.dirname(__file__)  # directory of this file
 
-    browser_profile_path = Path(tempfile.mkdtemp(prefix="firefox_profile_"))
+    browser_profile_path = Path(
+        tempfile.mkdtemp(prefix="firefox_profile_", dir=browser_params.tmp_profile_dir)
+    )
     status_queue.put(("STATUS", "Profile Created", browser_profile_path))
 
     # Use Options instead of FirefoxProfile to set preferences since the
@@ -46,7 +50,6 @@ def deploy_firefox(
     # https://github.com/openwpm/OpenWPM/issues/423#issuecomment-521018093
     fo.add_argument("-profile")
     fo.add_argument(str(browser_profile_path))
-
     assert browser_params.browser_id is not None
     if browser_params.seed_tar and not crash_recovery:
         logger.info(
@@ -75,7 +78,7 @@ def deploy_firefox(
     display_port = None
     display = None
     if display_mode == "headless":
-        fo.headless = True
+        fo.add_argument("--headless")
         fo.add_argument("--width={}".format(DEFAULT_SCREEN_RES[0]))
         fo.add_argument("--height={}".format(DEFAULT_SCREEN_RES[1]))
     if display_mode == "xvfb":
@@ -147,16 +150,22 @@ def deploy_firefox(
 
     # Launch the webdriver
     status_queue.put(("STATUS", "Launch Attempted", None))
-    fb = FirefoxBinary(firefox_path=firefox_binary_path)
+
+    fo.binary = FirefoxBinary(
+        firefox_path=firefox_binary_path, log_file=open(interceptor.fifo, "w")
+    )
+    geckodriver_path = subprocess.check_output(
+        "which geckodriver", encoding="utf-8", shell=True
+    ).strip()
     driver = webdriver.Firefox(
-        firefox_binary=fb,
         options=fo,
-        log_path=interceptor.fifo,
+        service=Service(
+            executable_path=geckodriver_path, log_output=open(interceptor.fifo, "w")
+        ),
     )
 
     # Add extension
     if browser_params.extension_enabled:
-
         # Install extension
         ext_loc = os.path.join(root_dir, "../../Extension/openwpm.xpi")
         ext_loc = os.path.normpath(ext_loc)
@@ -171,8 +180,6 @@ def deploy_firefox(
     # Get browser process pid
     if hasattr(driver, "service") and hasattr(driver.service, "process"):
         pid = driver.service.process.pid
-    elif hasattr(driver, "binary") and hasattr(driver.binary, "process"):
-        pid = driver.binary.process.pid
     else:
         raise RuntimeError("Unable to identify Firefox process ID.")
 

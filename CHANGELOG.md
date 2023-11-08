@@ -1,12 +1,32 @@
 # Changelog
 
+## v0.25.0 - 2023-10-13
+
+Bump to Firefox 118.0.2  
+Introduce StorageWatchdog #1056 (Thanks @gridl0ck for contributing this)  
+Upgrade Docker image to Ubuntu 22.04 #1055  
+Hopefully fixes #957 and #922
+
+## v0.24.0 - 2023-09-05
+
+Bump to Firefox 117
+Upgrade to Selenium 4.11 (Fixing the logs)
+
+## v0.23.0 - 2023-08-03
+
+Bump to Firefox 115.0.3
+
+## v0.22.0 - 2023-06-17
+
+Bump to Firefox 114.0.1
+
 ## v0.21.1 - 2022-10-13
 
 Fix erronous change to demo.py
 
 ## v0.21.0 - 2022-09-26
 
-Update to Firefox 105
+Update to Firefox 105  
 Unified and simplified Extension [#1008](https://github.com/openwpm/OpenWPM/pull/1008)
 
 ## v0.20.0 - 2022-05-05
@@ -15,7 +35,7 @@ Updates OpenWPM to Firefox 100
 
 ## v0.19.1 - 2022-03-22
 
-Hotfix for the Dockerfile
+Hotfix for the Dockerfile  
 Thanks to @sal123-droid for [the report](https://github.com/openwpm/openwpm-crawler/issues/56)
 
 ## v0.19.0 - 2022-03-10

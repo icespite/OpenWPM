@@ -162,7 +162,7 @@ Further information is available at [OPENWPM's Documentation Page](https://openw
 
 ## Advice for Measurement Researchers
 
-OpenWPM is [often used](https://webtap.princeton.edu/software/) for web
+OpenWPM is [often used](https://openwpm.readthedocs.io/Papers.html) for web
 measurement research. We recommend the following for researchers using the tool:
 
 **Use a versioned [release](https://github.com/openwpm/OpenWPM/releases).** We
@@ -272,7 +272,7 @@ Then you can run the demo script using:
 ```bash
     mkdir -p docker-volume && docker run -v $PWD/docker-volume:/opt/OpenWPM/datadir \
     -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --shm-size=2g \
-    -it openwpm
+    -it --init openwpm
 ```
 
 **Note:** the `--shm-size=2g` parameter is required, as it increases the

@@ -2,7 +2,6 @@
 "use strict";
 // eslint-disable-next-line no-unused-vars
 const EXPORTED_SYMBOLS = ["OpenWPMStackDumpChild"];
-const { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 
 class Controller {
   constructor(actor) {

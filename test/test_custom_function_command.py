@@ -54,13 +54,14 @@ class CollectLinksCommand(BaseCommand):
                 element.get_attribute("href")
                 for element in webdriver.find_elements(By.TAG_NAME, "a")
             )
-            if x.startswith(self.scheme + "://")
+            if x is not None and x.startswith(self.scheme + "://")
         ]
         current_url = webdriver.current_url
 
         sock = ClientSocket()
         assert manager_params.storage_controller_address is not None
         sock.connect(*manager_params.storage_controller_address)
+        sock.send("custom_command")
 
         for link in link_urls:
             query = (

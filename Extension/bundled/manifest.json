@@ -25,9 +25,9 @@
     "alarms",
     "downloads",
     "tabs",
-    "dns"
+    "dns",
+    "mozillaAddons"
   ],
-
   "experiment_apis": {
     "sockets": {
       "schema": "./privileged/sockets/schema.json",

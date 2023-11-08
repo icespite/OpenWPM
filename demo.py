@@ -23,7 +23,7 @@ sites = [
 # and NUM_BROWSERS copies of the default BrowserParams
 NUM_BROWSERS = 1
 manager_params = ManagerParams(num_browsers=NUM_BROWSERS)
-browser_params = [BrowserParams(display_mode="native") for _ in range(NUM_BROWSERS)]
+browser_params = [BrowserParams(display_mode=display_mode) for _ in range(NUM_BROWSERS)]
 
 # Update browser configuration (use this for per-browser settings)
 for browser_param in browser_params:
@@ -36,9 +36,12 @@ for browser_param in browser_params:
     # Record JS Web API calls
     browser_param.js_instrument = True
     # Record the callstack of all WebRequests made
-    browser_param.callstack_instrument = True
+    # browser_param.callstack_instrument = True
     # Record DNS resolution
     browser_param.dns_instrument = True
+    # Set this value as appropriate for the size of your temp directory
+    # if you are running out of space
+    browser_param.maximum_profile_size = 50 * (10**20)  # 50 MB = 50 * 2^20 Bytes
     browser_param.save_content = "beacon,csp_report,image,imageset,main_frame,media,object,object_subrequest,ping,script,stylesheet,sub_frame,web_manifest,websocket,xml_dtd,xmlhttprequest,xslt,other"
     browser_param.profile_archive_dir = Path("./datadir/profiles/")
     browser_param.proxy_ip = "127.0.0.1"
