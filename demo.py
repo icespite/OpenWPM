@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+
 from custom_command import LinkCountingCommand
 from openwpm.command_sequence import CommandSequence
 from openwpm.commands.browser_commands import GetCommand
@@ -10,20 +11,21 @@ from openwpm.task_manager import TaskManager
 parser = argparse.ArgumentParser()
 sites = [
     # "https://www.baidu.com",
-    "https://juejin.cn/",
+    # "https://www.exetel.com.au/",
     # "https://element.eleme.io/",
     # "https://microsoft.github.io/ai-edu/",
     # "https://bot.sannysoft.com/",
     # "https://privacycheck.sec.lrz.de/active/fp_cf/fp_canvas_font.html",
     # "https://theoatmeal.com/",
     # "https://www.yalala.com/"
+    "https://www.aveva.com/"
 ]
 
 # Loads the default ManagerParams
 # and NUM_BROWSERS copies of the default BrowserParams
 NUM_BROWSERS = 1
 manager_params = ManagerParams(num_browsers=NUM_BROWSERS)
-browser_params = [BrowserParams(display_mode=display_mode) for _ in range(NUM_BROWSERS)]
+browser_params = [BrowserParams(display_mode="native") for _ in range(NUM_BROWSERS)]
 
 # Update browser configuration (use this for per-browser settings)
 for browser_param in browser_params:
@@ -82,7 +84,7 @@ with TaskManager(
         # Start by visiting the page
         command_sequence.append_command(GetCommand(url=site, sleep=30), timeout=120)
         # Have a look at custom_command.py to see how to implement your own command
-        command_sequence.append_command(LinkCountingCommand())
+        # command_sequence.append_command(LinkCountingCommand())
 
         # Run commands across all browsers (simple parallelization)
         manager.execute_command_sequence(command_sequence)

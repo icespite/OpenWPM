@@ -1,7 +1,10 @@
 import argparse
+import logging
+import os
 import time
 from pathlib import Path
 
+import pandas as pd
 import tranco
 
 from custom_command import LinkCountingCommand
@@ -11,37 +14,51 @@ from openwpm.config import BrowserParams, ManagerParams
 from openwpm.storage.sql_provider import SQLiteStorageProvider
 from openwpm.task_manager import TaskManager
 from tool.extractUrl import getProcessedUrl
+from tool.getSites import getSitesFromJson
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--tranco", action="store_true", default=False),
 args = parser.parse_args()
+data_dir = Path("./datadir/")
+url_log_path = data_dir / "url.log"
+try:
+    os.mkdir(data_dir)
+    print("文件夹创建成功！")
+except FileExistsError:
+    print("文件夹已经存在！")
 
-if args.tranco:
-    # Load the latest tranco list. See https://tranco-list.eu/
-    print("Loading tranco top sites list...")
-    t = tranco.Tranco(cache=True, cache_dir=".tranco")
-    latest_list = t.list()
-    sites = ["http://" + x for x in latest_list.top(20)]
-    # sites = ["http://" + x for x in latest_list][10:20000]
-else:
-    import pandas as pd
+url_logging = logging.getLogger("url_logging")
+url_logging.setLevel(logging.DEBUG)
+url_logging.addHandler(logging.FileHandler(url_log_path))
 
-    sites = []
-    reader = pd.read_csv("./.tranco/8284V-DEFAULT.csv")
-    # print(reader)
-    index = 2000
-    insert = False
-    for idx, data in reader.iterrows():
-        if insert:
-            index -= 1
-            if index <= 0:
-                break
-            sites.append("http://" + data[1])
-        if data[1] == "playnet.it":
-            insert = True
+# if args.tranco:
+#     # Load the latest tranco list. See https://tranco-list.eu/
+#     print("Loading tranco top sites list...")
+#     t = tranco.Tranco(cache=True, cache_dir=".tranco")
+#     latest_list = t.list()
+#     sites = ["http://" + x for x in latest_list.top(20)]
+#     # sites = ["http://" + x for x in latest_list][10:20000]
+# else:
+#     sites = []
+#     reader = pd.read_csv("./.tranco/8284V-DEFAULT.csv")
+#     # print(reader)
+#     index = 9000
+#     sum = 10000
+#     for idx, data in reader.iterrows():
+#         if index > 0:
+#             index -= 1
+#         else:
+#             if sum > 0:
+#                 sum -= 1
+#                 sites.append("http://" + data[1])
+#             else:
+#                 break
+sites = getSitesFromJson("/home/icespite/Work/Thesis/fingerprinting_domains.json")
+
+
 # Loads the default ManagerParams
 # and NUM_BROWSERS copies of the default BrowserParams
-NUM_BROWSERS = 8
+NUM_BROWSERS = 6
 manager_params = ManagerParams(num_browsers=NUM_BROWSERS)
 browser_params = [BrowserParams(display_mode="headless") for _ in range(NUM_BROWSERS)]
 
@@ -56,7 +73,7 @@ for browser_param in browser_params:
     # Record JS Web API calls
     browser_param.js_instrument = True
     # Record the callstack of all WebRequests made
-    browser_param.callstack_instrument = True
+    # browser_param.callstack_instrument = True
     # Record DNS resolution
     browser_param.dns_instrument = True
     browser_param.save_content = "beacon,csp_report,image,imageset,main_frame,media,object,object_subrequest,ping,script,stylesheet,sub_frame,web_manifest,websocket,xml_dtd,xmlhttprequest,xslt,other"
@@ -73,23 +90,15 @@ manager_params.log_path = Path("./datadir/openwpm.log")
 manager_params.memory_watchdog = True
 manager_params.process_watchdog = True
 
-SUCCESS_FILE = open("./datadir/success.log", "a+")
-FAIL_FILE = open("./datadir/fail.log", "a+")
-
-
-success_sites = getProcessedUrl("./datadir/success.log")
+success_sites = getProcessedUrl(url_log_path)
 for site in success_sites:
     try:
         sites.remove(site)
     except ValueError:
         pass
-
+print(sites[:20])
 
 now_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + "\n"
-SUCCESS_FILE.write(now_time)
-SUCCESS_FILE.write("*" * 20)
-FAIL_FILE.write(now_time)
-FAIL_FILE.write("*" * 20)
 # Commands time out by default after 60 seconds
 with TaskManager(
     manager_params,
@@ -105,9 +114,9 @@ with TaskManager(
                 f"CommandSequence for {val} ran --->{'successfully' if success else 'unsuccessfully'}"
             )
             if success:
-                SUCCESS_FILE.write(val + "\n")
+                url_logging.info(f"success: {val}")
             else:
-                FAIL_FILE.write(val + "\n")
+                url_logging.info(f"fail: {val}")
 
         # Parallelize sites over all number of browsers set above.
         command_sequence = CommandSequence(

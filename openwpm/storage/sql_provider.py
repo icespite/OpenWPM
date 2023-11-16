@@ -66,13 +66,15 @@ class SQLiteStorageProvider(StructuredStorageProvider):
         except (
             OperationalError,
             ProgrammingError,
-            IntegrityError,
             InterfaceError,
         ) as e:
             self.logger.error(
                 "Unsupported record:\n%s\n%s\n%s\n%s\n"
                 % (type(e), e, statement, repr(args))
             )
+        except IntegrityError as e:
+            # self.logger.warning("Duplicate record: %s %s" % (type(e), e))
+            self._sql_counter += 1
 
     @staticmethod
     def _generate_insert(
